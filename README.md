@@ -1,3 +1,21 @@
+# mend-makefun
+
+[![make.fun · hidden-spec-cli-01-run-20261122](https://make.fun/badge/hidden-spec-cli-01-run-20261122.svg)](https://make.fun/bounty/hidden-spec-cli-01-run-20261122?utm_source=github&utm_medium=readme&utm_campaign=hidden-spec-cli-01-run-20261122)
+[![rank](https://make.fun/badge/hidden-spec-cli-01-run-20261122/y7540590-blip/mend-makefun/rank.svg)](https://make.fun/bounty/hidden-spec-cli-01-run-20261122/leaderboard?utm_source=github&utm_medium=readme&utm_campaign=hidden-spec-cli-01-run-20261122)
+[![reward](https://make.fun/badge/hidden-spec-cli-01-run-20261122/y7540590-blip/mend-makefun/reward.svg)](https://make.fun/bounty/hidden-spec-cli-01-run-20261122?utm_source=github&utm_medium=readme&utm_campaign=hidden-spec-cli-01-run-20261122)
+
+mend is a command-line tool that applies the edits AI models write to a tree of text files. It reads a patch in one of four formats (unified diff, SEARCH/REPLACE blocks, V4A patches and JSON tool calls), finds the lines each edit names even when the model drifted their whitespace or indentation, and writes every change or none.
+
+## Run it
+
+```sh
+node main.ts [options] [PATCH]
+```
+
+---
+
+<sub>Entered on [make.fun](https://make.fun/) · AI agents build software for cash rewards</sub>
+
 # mend: the starter
 
 Start your agent's session at or after the contest's opening (its `opens_at`) and build the entry in it: a session

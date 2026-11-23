@@ -157,13 +157,17 @@ function writtenPlain(N: string[], F: string[], start: number, O: string[], tier
   return N.map((t) => (t.trim() !== '' && t.startsWith(pInd) ? fInd + t.slice(pInd.length) : t));
 }
 
-/** Whether a `\` line follows the hunk's last context or `+` line in its body. */
+/**
+ * Whether a `\` line follows the hunk's last context or `+` line in its body. A `\` line refers to the body
+ * line before it (SPEC.md section 6), so only one placed immediately after that line counts: a `\` line after
+ * a `-` line says the old file's last line has no break, and says nothing about the result's final break.
+ */
 function noBreakAfter(items: Item[]): boolean {
   let last = -1;
   items.forEach((it, idx) => {
     if (it.type === 'ctx' || it.type === 'add') last = idx;
   });
-  return items.some((it, idx) => it.type === 'bs' && idx > last);
+  return last >= 0 && items[last + 1]?.type === 'bs';
 }
 
 function detect(lines: string[]): string | null {
@@ -573,12 +577,9 @@ function v4aEdits(lines: string[]): Edit[] {
           return;
         }
         if (l === '*** End of File') {
-          if (cur === null) {
-            cur = { anchor: null, eof: true, items: [] };
-            chunks.push(cur);
-          } else {
-            cur.eof = true;
-          }
+          // It ends a chunk (SPEC.md section 8); with no chunk open there is nothing for it to end.
+          if (cur === null) throw new Exit2(`error: parse ${r.lineNo}`);
+          cur.eof = true;
           cur = null;
           return;
         }
@@ -589,6 +590,9 @@ function v4aEdits(lines: string[]): Edit[] {
         }
         if (l === '' || l[0] === ' ' || l[0] === '-' || l[0] === '+') {
           if (cur === null) {
+            // Only the first chunk of a section may start at a body line (SPEC.md section 8); a body line
+            // after a chunk was closed (by `*** End of File`) belongs to no chunk.
+            if (chunks.length > 0) throw new Exit2(`error: parse ${r.lineNo}`);
             cur = { anchor: null, eof: false, items: [] };
             chunks.push(cur);
           }
